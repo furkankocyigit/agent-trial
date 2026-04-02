@@ -1,102 +1,143 @@
-# Agent Trial Project
+# Agent Trial - True Agentic Workflow
 
-Multi-agent workflow trial. 4 agents, 1 human (you) who merges PRs.
+🤖 **Real custom agents with auto-chaining, colors, and permissions**
 
-## Prerequisites
+## Project Structure
 
-```bash
-# 1. Claude Code installed
-npm install -g @anthropic-ai/claude-code
-
-# 2. GitHub CLI installed and authenticated
-brew install gh   # or: https://cli.github.com
-gh auth login
-
-# 3. Make scripts executable (one-time setup)
-chmod +x scripts/*.sh
+```
+.claude/
+├── agents/              ← Custom agent definitions
+│   ├── pm/             📋 Blue - Product Manager
+│   ├── architect/      🏗️  Purple - Software Architect  
+│   ├── developer/      💻 Green - Software Developer
+│   └── reviewer/       🔍 Red - Code Reviewer
+└── skills/             ← Commands to invoke agents
+    ├── pm/            → /pm
+    ├── architect/     → /architect EPIC-001
+    ├── dev/           → /dev TASK-001
+    └── review/        → /review 1
 ```
 
-## First-time repo setup
-
-```bash
-# Create repo on GitHub and push this project
-git init
-git add -A
-git commit -m "Initial project setup"
-gh repo create agent-trial --public --source=. --push
-```
-
-## Running the pipeline (Hello World feature)
-
-### Step 1 — PM Agent
-```bash
-./scripts/run-pm.sh
-```
-When it starts, type:
-> "I want a Hello World REST API. GET /hello returns a JSON greeting with a message and timestamp."
-
-It will write `epics.md`. Exit the session (Ctrl+C or type "done").
+Each agent has:
+- ✅ Custom color & icon
+- ✅ Specific permissions (no constant prompts!)
+- ✅ Auto-chaining capability
 
 ---
 
-### Step 2 — Architect Agent
+## The Workflow
+
+### Step 1: Create Epics
 ```bash
-./scripts/run-architect.sh
+claude
 ```
-It reads `epics.md` automatically and writes `tasks.md`. Exit when done.
+
+```
+/pm
+```
+
+📋 **PM agent** (blue) spawns, asks what you want, creates `epics.md`
 
 ---
 
-### Step 3 — Developer Agent
+### Step 2: Plan & Auto-Execute
+```
+/architect EPIC-001
+```
+
+**Auto-chain happens:**
+1. 🏗️  **Architect** (purple) creates `tasks.md`
+2. 🏗️  Architect spawns 💻 **Developer** (green)
+3. 💻 Developer implements TASK-001, opens PR
+4. 💻 Developer spawns 🔍 **Reviewer** (red)
+5. 🔍 Reviewer reviews PR
+
+You see each agent by color!
+
+---
+
+### Step 3: Merge
 ```bash
-./scripts/run-developer.sh TASK-001
+gh pr list
+# Go to GitHub and merge
 ```
-It will:
-- Create a branch `task/TASK-001-...`
-- Write the code
-- Commit and push
-- Open a PR on GitHub
-
-Copy the PR number it gives you (e.g. PR #1).
 
 ---
 
-### Step 4 — Reviewer Agent
+## Manual Override
+
+```
+/dev TASK-002      # Manually run developer
+/review 1          # Manually run reviewer
+```
+
+---
+
+## Example Session - Sprint 1
+
 ```bash
-./scripts/run-reviewer.sh 1
-```
-It will fetch the PR diff from GitHub and post a review.
+$ claude
 
-- **Approved?** → Go to GitHub and merge the PR yourself
-- **Changes requested?** → Run Developer agent again with the feedback
+> /pm
+📋 PM: What feature do you want?
+> Hello World API
+📋 PM: Created EPIC-001 in epics.md ✓
+
+> /architect EPIC-001
+🏗️  Architect: Planning EPIC-001...
+🏗️  Architect: Created TASK-001, TASK-002, TASK-003 in tasks.md ✓
+🏗️  Architect: Spawning developer for TASK-001...
+💻 Developer: Implementing TASK-001...
+💻 Developer: Created branch task/TASK-001-greeting-domain
+💻 Developer: Pushed + opened PR #1
+💻 Developer: Spawning reviewer...
+🔍 Reviewer: Reviewing PR #1...
+🔍 Reviewer: ✅ Approved!
+
+Done! Merge PR #1, then run /dev TASK-002 for next task.
+```
+
+## Example - Sprint 2 (Same Repo)
+
+```bash
+$ claude
+
+> /pm
+📋 PM: What feature do you want?
+> User authentication
+📋 PM: Found existing epics, adding EPIC-002 ✓
+
+> /architect EPIC-002
+🏗️  Architect: Planning EPIC-002...
+🏗️  Architect: Created TASK-004, TASK-005 in tasks.md ✓
+🏗️  Architect: Spawning developer for TASK-004...
+💻 Developer: Implementing TASK-004...
+```
+
+**Key**: Numbers auto-increment across sprints!
 
 ---
 
-### Step 5 — You merge
-Go to `github.com/YOUR_USERNAME/agent-trial/pulls`
-Open the PR, confirm it's approved, click **Merge pull request**.
+## Features
+
+✅ **Custom agents** in `.claude/agents/` with permissions  
+✅ **No permission prompts** - agents have bash access pre-approved  
+✅ **Color-coded** - easy to see which agent is running  
+✅ **Auto-chaining** - agents spawn other agents automatically  
+✅ **Skills** - simple `/pm`, `/architect` commands  
 
 ---
 
-## Folder structure (after agents run)
+## Try It Now
+
+```bash
+cd /Users/furkan.kocyigit/Projects/personal/agent-trial
+claude
 ```
-agent-trial/
-├── CLAUDE.md              ← agent standing instructions
-├── epics.md               ← written by PM agent
-├── tasks.md               ← written by Architect agent
-├── agents/                ← system prompts for each agent
-│   ├── pm-prompt.md
-│   ├── architect-prompt.md
-│   ├── developer-prompt.md
-│   └── reviewer-prompt.md
-├── scripts/               ← run each agent from here
-│   ├── run-pm.sh
-│   ├── run-architect.sh
-│   ├── run-developer.sh
-│   └── run-reviewer.sh
-└── src/                   ← code written by Developer agent
-    ├── domain/
-    ├── application/
-    ├── infrastructure/
-    └── presentation/
+
+Then:
 ```
+/pm
+```
+
+Watch the agentic magic! 🚀
