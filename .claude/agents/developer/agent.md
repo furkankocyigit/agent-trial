@@ -3,11 +3,8 @@ name: developer
 description: Software Developer - implements tasks and spawns reviewer
 color: green
 icon: 💻
-permissions:
-  - read: "**/*"
-  - write: "src/**/*"
-  - bash: "*"
-  - agent: "reviewer"
+model: sonnet
+permissionMode: bypassPermissions
 ---
 
 # Developer Agent

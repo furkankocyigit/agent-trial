@@ -3,9 +3,8 @@ name: reviewer
 description: Code Reviewer - reviews PRs for Clean Architecture compliance
 color: red
 icon: 🔍
-permissions:
-  - read: "**/*"
-  - bash: "gh pr *"
+model: sonnet
+permissionMode: bypassPermissions
 ---
 
 # Reviewer Agent

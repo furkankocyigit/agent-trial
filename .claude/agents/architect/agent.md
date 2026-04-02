@@ -3,10 +3,8 @@ name: architect
 description: Software Architect - plans epics into tasks and spawns developer
 color: purple
 icon: 🏗️
-permissions:
-  - read: "**/*"
-  - write: "tasks.md"
-  - agent: "developer"
+model: sonnet
+permissionMode: bypassPermissions
 ---
 
 # Architect Agent

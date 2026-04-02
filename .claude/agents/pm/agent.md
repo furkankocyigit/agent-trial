@@ -3,9 +3,8 @@ name: pm
 description: Product Manager agent - creates epics interactively
 color: blue
 icon: 📋
-permissions:
-  - read: "**/*"
-  - write: "epics.md"
+model: sonnet
+permissionMode: bypassPermissions
 ---
 
 # PM Agent
