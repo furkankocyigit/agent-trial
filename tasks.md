@@ -1,160 +1,138 @@
-# Implementation Tasks
+# Tasks
 
 ---
-## TASK-001: Create Domain Entity and Greeting Logic
+## TASK-001: Create Greeting domain entity
 **Epic:** EPIC-001
 **Layer:** domain
 **Estimate:** S (< 2h)
 
 **What to build:**
-Implement the core greeting entity and business logic in the domain layer. This includes a pure function that generates a greeting message with timestamp, adhering to Clean Architecture principles with zero framework dependencies.
+Create a pure domain entity that encapsulates the "Hello World" greeting logic. This should be a simple value object or entity with no external dependencies.
 
 **Interface / contract:**
 ```javascript
-// src/domain/greeting.js
-
-/**
- * Create a greeting with timestamp
- * @returns {{ message: string, timestamp: string }}
- */
-export function createGreeting() {
-  // Returns greeting object with message and ISO timestamp
+// src/domain/greeting/Greeting.js
+export class Greeting {
+  constructor(message)
+  getMessage()
 }
+
+// Factory function
+export function createGreeting(message)
 ```
 
 **Acceptance criteria:**
-- [ ] Pure function with no external dependencies
-- [ ] Returns object with message and timestamp fields
-- [ ] Timestamp in ISO 8601 format
-- [ ] Unit tests cover the greeting creation logic
-- [ ] No imports from Express or other frameworks
+- [ ] Greeting entity exists in src/domain/greeting/
+- [ ] Entity has no imports from other layers or frameworks
+- [ ] Unit tests exist for Greeting entity
+- [ ] Tests verify greeting message can be created and retrieved
 
 **Dependencies:** none
 
 ---
-## TASK-002: Create Application Use Case
+## TASK-002: Create GetGreeting use case
 **Epic:** EPIC-001
 **Layer:** application
 **Estimate:** S (< 2h)
 
 **What to build:**
-Create the use case that orchestrates the greeting domain logic. This layer coordinates domain operations and provides the interface for the presentation layer to invoke.
+Create an application use case that orchestrates the domain logic to return a greeting. This encapsulates the business flow for getting a "Hello World" message.
 
 **Interface / contract:**
 ```javascript
-// src/application/useCases/getGreeting.js
-
-/**
- * Use case: Get greeting
- * @returns {Promise<{ message: string, timestamp: string }>}
- */
-export async function getGreeting() {
-  // Orchestrates domain logic
+// src/application/use-cases/GetGreeting.js
+export class GetGreeting {
+  execute()
 }
 ```
 
 **Acceptance criteria:**
-- [ ] Use case function calls domain layer
-- [ ] Returns promise with greeting data
-- [ ] Unit tests verify use case behavior
-- [ ] No HTTP/Express-specific code
+- [ ] GetGreeting use case exists in src/application/use-cases/
+- [ ] Use case imports only from domain layer
+- [ ] Unit tests exist for GetGreeting use case
+- [ ] Tests verify use case returns expected greeting
 
 **Dependencies:** TASK-001
 
 ---
-## TASK-003: Setup Express Server Infrastructure
+## TASK-003: Setup Express infrastructure
 **Epic:** EPIC-001
 **Layer:** infrastructure
 **Estimate:** M (2-4h)
 
 **What to build:**
-Configure Express server with proper ESM setup, including server initialization, port configuration, and npm scripts. This is the infrastructure foundation that the presentation layer will build upon.
+Setup Express server with ESM support, middleware configuration, and error handling. This provides the HTTP server infrastructure.
 
 **Interface / contract:**
 ```javascript
-// src/infrastructure/server.js
+// src/infrastructure/http/server.js
+export function createServer(config)
+export function startServer(server, port)
 
-/**
- * Create and configure Express app
- * @returns {Express.Application}
- */
-export function createApp() {
-  // Returns configured Express app
-}
-
-/**
- * Start server on specified port
- * @param {Express.Application} app
- * @param {number} port
- */
-export function startServer(app, port = 3000) {
-  // Starts server and returns server instance
-}
+// src/infrastructure/http/express-app.js
+export function createExpressApp()
 ```
 
 **Acceptance criteria:**
-- [ ] Express server with ESM imports
-- [ ] Configurable port (default 3000)
-- [ ] package.json with start script
-- [ ] Server starts successfully
-- [ ] Basic error handling for server startup
+- [ ] Express app factory exists in src/infrastructure/http/
+- [ ] Server can start and listen on configurable port
+- [ ] JSON middleware configured
+- [ ] Error handling middleware exists
+- [ ] ESM (type: module) properly configured in package.json
 
 **Dependencies:** none
 
 ---
-## TASK-004: Create Hello Endpoint Presentation Layer
+## TASK-004: Create /hello route handler
 **Epic:** EPIC-001
 **Layer:** presentation
 **Estimate:** S (< 2h)
 
 **What to build:**
-Implement the /hello route handler that maps HTTP requests to the application use case and transforms the response to JSON format.
+Create the presentation layer route handler for GET /hello that maps HTTP request/response to the use case.
 
 **Interface / contract:**
 ```javascript
-// src/presentation/routes/hello.js
+// src/presentation/routes/hello-routes.js
+export function createHelloRoutes(dependencies)
 
-/**
- * Register hello routes on Express app
- * @param {Express.Application} app
- */
-export function registerHelloRoutes(app) {
-  // Registers GET /hello route
-}
+// Route handler
+GET /hello -> 200 { message: "Hello World" }
 ```
 
 **Acceptance criteria:**
-- [ ] GET /hello endpoint registered
-- [ ] Route handler calls getGreeting use case
-- [ ] Returns JSON with message and timestamp
-- [ ] Proper HTTP status codes
-- [ ] Route integrated into main server
+- [ ] Route handler exists in src/presentation/routes/
+- [ ] Handler calls GetGreeting use case
+- [ ] Handler returns JSON response with greeting message
+- [ ] Integration test verifies GET /hello returns 200 with expected payload
 
 **Dependencies:** TASK-002, TASK-003
 
 ---
-## TASK-005: Project Setup and Integration
+## TASK-005: Wire up application entry point
 **Epic:** EPIC-001
 **Layer:** infrastructure
-**Estimate:** M (2-4h)
+**Estimate:** S (< 2h)
 
 **What to build:**
-Complete project initialization with package.json, ESM configuration, test framework setup, and integration of all layers. Create main entry point that wires everything together.
+Create the main application entry point that wires all layers together with dependency injection and starts the server.
 
 **Interface / contract:**
 ```javascript
 // src/index.js
-// Main entry point that imports and starts the server
+// Main entry point that:
+// 1. Creates use case instances
+// 2. Injects dependencies into routes
+// 3. Registers routes with Express app
+// 4. Starts server
 ```
 
 **Acceptance criteria:**
-- [ ] package.json with dependencies (Express, test framework)
-- [ ] ESM configuration in package.json ("type": "module")
-- [ ] Test script in package.json
-- [ ] All layers integrated in main entry point
-- [ ] Server starts with npm start
-- [ ] Tests run with npm test
-- [ ] README with setup and run instructions
+- [ ] Entry point exists at src/index.js
+- [ ] Dependencies properly injected from outer to inner layers
+- [ ] Server starts successfully on port 3000 (or env PORT)
+- [ ] Manual smoke test: curl localhost:3000/hello returns Hello World
+- [ ] All tests pass (npm test)
 
 **Dependencies:** TASK-004
 

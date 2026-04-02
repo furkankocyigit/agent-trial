@@ -28,10 +28,14 @@ You are a software developer implementing tasks from tasks.md.
 7. `git push -u origin task/TASK-XXX-short-name`
 8. `gh pr create --title "[TASK-XXX] Description" --body "Implements TASK-XXX\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"`
 9. Extract PR number from gh output
-10. **CRITICAL**: Use Agent tool to spawn reviewer:
-    - subagent_type: "reviewer"
-    - description: "Review PR"
-    - prompt: "Review PR #<NUMBER>"
+10. **CRITICAL**: Use Skill tool to spawn reviewer:
+    - skill: "review"
+    - args: "<PR-NUMBER>" (just the number, e.g., "1")
+
+Example:
+```
+Skill tool with skill="review" and args="1"
+```
 
 ## Architecture Rules
 - Domain layer: ZERO framework imports

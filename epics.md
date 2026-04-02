@@ -1,29 +1,15 @@
-# Product Epics
-
 ---
-## EPIC-001: Hello World API Endpoint
+## EPIC-001: Hello World API
 
-**Goal:** Build a simple Node.js REST API server with a /hello endpoint that returns a greeting message and timestamp in JSON format.
+**Goal:** Create a simple Node.js REST API that returns "Hello World" to validate the agentic workflow and project setup.
 
-**Domain context:** This is a proof-of-concept API endpoint for testing the agent workflow system. The endpoint will serve as a baseline for validating the PM → Architect → Developer → Reviewer pipeline. No business logic required beyond returning a simple greeting.
+**Domain context:** This is a trial project to validate true agentic multi-agent workflow. Stack is Node.js (ESM) + Express with Clean Architecture.
 
 **Acceptance criteria:**
-- [ ] Node.js server running with Express framework
-- [ ] GET endpoint at /hello returns JSON response
-- [ ] Response includes a greeting message field
-- [ ] Response includes a timestamp field
-- [ ] Server starts successfully on a configurable port (default 3000)
-- [ ] Unit tests verify the greeting logic
-- [ ] Clean Architecture structure (domain, application, infrastructure, presentation layers)
-- [ ] Server can be started with npm scripts
+- [ ] API runs on Express
+- [ ] GET /hello endpoint returns "Hello World"
+- [ ] Follows Clean Architecture (domain/application/infrastructure/presentation layers)
+- [ ] Tests exist for domain and application layers
 
-**Out of scope:** 
-- Authentication/authorization
-- Database integration
-- Integration or end-to-end tests
-- Deployment configuration
-- Environment-specific configs beyond local development
-- Error handling middleware (beyond Express defaults)
-- Logging systems
-- Rate limiting or advanced middleware
+**Out of scope:** Authentication, database, additional endpoints beyond /hello
 ---

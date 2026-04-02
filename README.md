@@ -1,143 +1,147 @@
 # Agent Trial - True Agentic Workflow
 
-🤖 **Real custom agents with auto-chaining, colors, and permissions**
+🤖 **Real orchestrator with autonomous agent chaining**
 
-## Project Structure
-
-```
-.claude/
-├── agents/              ← Custom agent definitions
-│   ├── pm/             📋 Blue - Product Manager
-│   ├── architect/      🏗️  Purple - Software Architect  
-│   ├── developer/      💻 Green - Software Developer
-│   └── reviewer/       🔍 Red - Code Reviewer
-└── skills/             ← Commands to invoke agents
-    ├── pm/            → /pm
-    ├── architect/     → /architect EPIC-001
-    ├── dev/           → /dev TASK-001
-    └── review/        → /review 1
-```
-
-Each agent has:
-- ✅ Custom color & icon
-- ✅ Specific permissions (no constant prompts!)
-- ✅ Auto-chaining capability
-
----
-
-## The Workflow
-
-### Step 1: Create Epics
-```bash
-claude
-```
-
-```
-/pm
-```
-
-📋 **PM agent** (blue) spawns, asks what you want, creates `epics.md`
-
----
-
-### Step 2: Plan & Auto-Execute
-```
-/architect EPIC-001
-```
-
-**Auto-chain happens:**
-1. 🏗️  **Architect** (purple) creates `tasks.md`
-2. 🏗️  Architect spawns 💻 **Developer** (green)
-3. 💻 Developer implements TASK-001, opens PR
-4. 💻 Developer spawns 🔍 **Reviewer** (red)
-5. 🔍 Reviewer reviews PR
-
-You see each agent by color!
-
----
-
-### Step 3: Merge
-```bash
-gh pr list
-# Go to GitHub and merge
-```
-
----
-
-## Manual Override
-
-```
-/dev TASK-002      # Manually run developer
-/review 1          # Manually run reviewer
-```
-
----
-
-## Example Session - Sprint 1
-
-```bash
-$ claude
-
-> /pm
-📋 PM: What feature do you want?
-> Hello World API
-📋 PM: Created EPIC-001 in epics.md ✓
-
-> /architect EPIC-001
-🏗️  Architect: Planning EPIC-001...
-🏗️  Architect: Created TASK-001, TASK-002, TASK-003 in tasks.md ✓
-🏗️  Architect: Spawning developer for TASK-001...
-💻 Developer: Implementing TASK-001...
-💻 Developer: Created branch task/TASK-001-greeting-domain
-💻 Developer: Pushed + opened PR #1
-💻 Developer: Spawning reviewer...
-🔍 Reviewer: Reviewing PR #1...
-🔍 Reviewer: ✅ Approved!
-
-Done! Merge PR #1, then run /dev TASK-002 for next task.
-```
-
-## Example - Sprint 2 (Same Repo)
-
-```bash
-$ claude
-
-> /pm
-📋 PM: What feature do you want?
-> User authentication
-📋 PM: Found existing epics, adding EPIC-002 ✓
-
-> /architect EPIC-002
-🏗️  Architect: Planning EPIC-002...
-🏗️  Architect: Created TASK-004, TASK-005 in tasks.md ✓
-🏗️  Architect: Spawning developer for TASK-004...
-💻 Developer: Implementing TASK-004...
-```
-
-**Key**: Numbers auto-increment across sprints!
-
----
-
-## Features
-
-✅ **Custom agents** in `.claude/agents/` with permissions  
-✅ **No permission prompts** - agents have bash access pre-approved  
-✅ **Color-coded** - easy to see which agent is running  
-✅ **Auto-chaining** - agents spawn other agents automatically  
-✅ **Skills** - simple `/pm`, `/architect` commands  
-
----
-
-## Try It Now
+## Quick Start
 
 ```bash
 cd /Users/furkan.kocyigit/Projects/personal/agent-trial
 claude
 ```
 
-Then:
+Then ONE command:
 ```
-/pm
+/build "Hello World API with JSON response"
 ```
 
-Watch the agentic magic! 🚀
+That's it! One agent handles everything:
+1. Asks what you want to build
+2. Spawns 📋 PM → creates epics
+3. Spawns 🏗️ Architect → creates tasks  
+4. Spawns 💻 Developer → implements code, opens PR
+5. Spawns 🔍 Reviewer → reviews PR
+
+You just merge the PR when done.
+
+---
+
+## Architecture
+
+```
+🎯 Orchestrator (YOU ONLY TALK TO THIS)
+    ↓
+    Spawns → 📋 PM (Blue)
+    ↓
+    Spawns → 🏗️ Architect (Purple)
+    ↓
+    Spawns → 💻 Developer (Green)
+    ↓
+    Spawns → 🔍 Reviewer (Red)
+```
+
+**Best Practice**: One orchestrator coordinates specialist agents.
+
+---
+
+## Manual Override (Advanced)
+
+If you want control over each step:
+
+| Command | What | When to Use |
+|---------|------|-------------|
+| `/build` | Full pipeline | ⭐ **99% of the time** |
+| `/pm` | Just create epics | Testing/debugging |
+| `/architect EPIC-X` | Just plan epic | Already have epics |
+| `/dev TASK-X` | Just implement task | Re-run failed task |
+| `/review N` | Just review PR | Re-review after changes |
+
+---
+
+## Example Session
+
+```bash
+$ claude
+
+> /build
+🎯 Orchestrator: What feature do you want to build?
+
+> A hello world API with JSON response
+
+🎯 Orchestrator: Starting PM agent...
+📋 PM: Created EPIC-001 ✓
+
+🎯 Orchestrator: Starting Architect for EPIC-001...
+🏗️ Architect: Created TASK-001, TASK-002, TASK-003 ✓
+
+🎯 Orchestrator: Starting Developer for TASK-001...
+💻 Developer: Implemented code, opened PR #1 ✓
+
+🎯 Orchestrator: Starting Reviewer for PR #1...
+🔍 Reviewer: ✅ Approved!
+
+🎯 Orchestrator: ✅ Complete! 
+   PR: https://github.com/you/agent-trial/pull/1
+   Action: Merge when ready
+
+> exit
+```
+
+Go to GitHub, merge PR #1. Done! 🚀
+
+---
+
+## Project Structure
+
+```
+.claude/
+├── agents/
+│   ├── orchestrator/   🎯 Coordinates everything
+│   ├── pm/             📋 Creates epics
+│   ├── architect/      🏗️ Plans tasks
+│   ├── developer/      💻 Writes code
+│   └── reviewer/       🔍 Reviews PRs
+└── skills/
+    ├── build/          → /build (calls orchestrator)
+    ├── pm/             → /pm (manual)
+    ├── architect/      → /architect (manual)
+    ├── dev/            → /dev (manual)
+    └── review/         → /review (manual)
+```
+
+---
+
+## Why Orchestrator?
+
+### ❌ Before (Wrong)
+```
+User → PM
+User → Architect
+User → Developer
+User → Reviewer
+```
+**User is the orchestrator** ← Bad!
+
+### ✅ After (Correct)
+```
+User → Orchestrator → PM → Architect → Developer → Reviewer
+```
+**Orchestrator is the orchestrator** ← Good!
+
+This is the **industry best practice** for agentic workflows:
+- One coordinator agent
+- Multiple specialist agents
+- User only talks to coordinator
+
+---
+
+## Try It Now
+
+```bash
+claude
+```
+
+```
+/build
+```
+
+Watch the magic! 🎯→📋→🏗️→💻→🔍

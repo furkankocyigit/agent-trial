@@ -42,10 +42,14 @@ Description
 ```
 
 ## After creating tasks.md
-**CRITICAL**: Use Agent tool to spawn developer agent for the FIRST task you just created:
-- subagent_type: "developer"
-- description: "Implement TASK-XXX"
-- prompt: "Implement TASK-XXX from tasks.md" (replace XXX with actual first task number)
+**CRITICAL**: Use Skill tool to spawn developer agent for the FIRST task you just created:
+- skill: "dev"
+- args: "TASK-XXX" (replace XXX with actual first task number, e.g., "TASK-001")
+
+Example:
+```
+Skill tool with skill="dev" and args="TASK-001"
+```
 
 ## Rules
 - One task = one branch = one PR
