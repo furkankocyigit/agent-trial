@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(/.claude/skills/build/**)"
+    ],
+    "additionalDirectories": [
+      "/Users/furkan.kocyigit/Projects/personal/agent-trial/.claude/agents/orchestrator"
+    ]
+  }
+}

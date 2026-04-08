@@ -1,11 +1,25 @@
 # Agent Workflow — Standing Instructions
 
-This repo uses a 4-agent pipeline. Read this file before doing anything.
+This repo uses a 4-agent **agentic** pipeline where agents spawn other agents automatically.
 
 ## Project context
-This is a trial project to validate the multi-agent workflow.
+This is a trial project to validate true agentic multi-agent workflow.
 Current feature under development: **Hello World API**
-Stack: Node.js + Express. No framework beyond that for this trial.
+Stack: Node.js (ESM) + Express. No framework beyond that for this trial.
+
+## Agentic Chain
+- PM (manual) → creates epics.md
+- Architect (manual) → creates tasks.md → **auto-spawns Developer agent**
+- Developer (automatic) → implements task, opens PR → **auto-spawns Reviewer agent**
+- Reviewer (automatic) → reviews PR
+- Human (manual) → merges PR
+
+## Agent System
+Custom agents defined in `.claude/agents/`:
+- 📋 **PM** (blue) - Interactive epic creation
+- 🏗️  **Architect** (purple) - Plans tasks, spawns Developer
+- 💻 **Developer** (green) - Implements code, spawns Reviewer  
+- 🔍 **Reviewer** (red) - Reviews PRs
 
 ## File contracts
 | File | Written by | Read by |

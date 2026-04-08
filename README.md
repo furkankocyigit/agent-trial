@@ -1,102 +1,147 @@
-# Agent Trial Project
+# Agent Trial - True Agentic Workflow
 
-Multi-agent workflow trial. 4 agents, 1 human (you) who merges PRs.
+🤖 **Real orchestrator with autonomous agent chaining**
 
-## Prerequisites
-
-```bash
-# 1. Claude Code installed
-npm install -g @anthropic-ai/claude-code
-
-# 2. GitHub CLI installed and authenticated
-brew install gh   # or: https://cli.github.com
-gh auth login
-
-# 3. Make scripts executable (one-time setup)
-chmod +x scripts/*.sh
-```
-
-## First-time repo setup
+## Quick Start
 
 ```bash
-# Create repo on GitHub and push this project
-git init
-git add -A
-git commit -m "Initial project setup"
-gh repo create agent-trial --public --source=. --push
+cd /Users/furkan.kocyigit/Projects/personal/agent-trial
+claude
 ```
 
-## Running the pipeline (Hello World feature)
-
-### Step 1 — PM Agent
-```bash
-./scripts/run-pm.sh
+Then ONE command:
 ```
-When it starts, type:
-> "I want a Hello World REST API. GET /hello returns a JSON greeting with a message and timestamp."
+/build "Hello World API with JSON response"
+```
 
-It will write `epics.md`. Exit the session (Ctrl+C or type "done").
+That's it! One agent handles everything:
+1. Asks what you want to build
+2. Spawns 📋 PM → creates epics
+3. Spawns 🏗️ Architect → creates tasks  
+4. Spawns 💻 Developer → implements code, opens PR
+5. Spawns 🔍 Reviewer → reviews PR
+
+You just merge the PR when done.
 
 ---
 
-### Step 2 — Architect Agent
+## Architecture
+
+```
+🎯 Orchestrator (YOU ONLY TALK TO THIS)
+    ↓
+    Spawns → 📋 PM (Blue)
+    ↓
+    Spawns → 🏗️ Architect (Purple)
+    ↓
+    Spawns → 💻 Developer (Green)
+    ↓
+    Spawns → 🔍 Reviewer (Red)
+```
+
+**Best Practice**: One orchestrator coordinates specialist agents.
+
+---
+
+## Manual Override (Advanced)
+
+If you want control over each step:
+
+| Command | What | When to Use |
+|---------|------|-------------|
+| `/build` | Full pipeline | ⭐ **99% of the time** |
+| `/pm` | Just create epics | Testing/debugging |
+| `/architect EPIC-X` | Just plan epic | Already have epics |
+| `/dev TASK-X` | Just implement task | Re-run failed task |
+| `/review N` | Just review PR | Re-review after changes |
+
+---
+
+## Example Session
+
 ```bash
-./scripts/run-architect.sh
+$ claude
+
+> /build
+🎯 Orchestrator: What feature do you want to build?
+
+> A hello world API with JSON response
+
+🎯 Orchestrator: Starting PM agent...
+📋 PM: Created EPIC-001 ✓
+
+🎯 Orchestrator: Starting Architect for EPIC-001...
+🏗️ Architect: Created TASK-001, TASK-002, TASK-003 ✓
+
+🎯 Orchestrator: Starting Developer for TASK-001...
+💻 Developer: Implemented code, opened PR #1 ✓
+
+🎯 Orchestrator: Starting Reviewer for PR #1...
+🔍 Reviewer: ✅ Approved!
+
+🎯 Orchestrator: ✅ Complete! 
+   PR: https://github.com/you/agent-trial/pull/1
+   Action: Merge when ready
+
+> exit
 ```
-It reads `epics.md` automatically and writes `tasks.md`. Exit when done.
+
+Go to GitHub, merge PR #1. Done! 🚀
 
 ---
 
-### Step 3 — Developer Agent
+## Project Structure
+
+```
+.claude/
+├── agents/
+│   ├── orchestrator/   🎯 Coordinates everything
+│   ├── pm/             📋 Creates epics
+│   ├── architect/      🏗️ Plans tasks
+│   ├── developer/      💻 Writes code
+│   └── reviewer/       🔍 Reviews PRs
+└── skills/
+    ├── build/          → /build (calls orchestrator)
+    ├── pm/             → /pm (manual)
+    ├── architect/      → /architect (manual)
+    ├── dev/            → /dev (manual)
+    └── review/         → /review (manual)
+```
+
+---
+
+## Why Orchestrator?
+
+### ❌ Before (Wrong)
+```
+User → PM
+User → Architect
+User → Developer
+User → Reviewer
+```
+**User is the orchestrator** ← Bad!
+
+### ✅ After (Correct)
+```
+User → Orchestrator → PM → Architect → Developer → Reviewer
+```
+**Orchestrator is the orchestrator** ← Good!
+
+This is the **industry best practice** for agentic workflows:
+- One coordinator agent
+- Multiple specialist agents
+- User only talks to coordinator
+
+---
+
+## Try It Now
+
 ```bash
-./scripts/run-developer.sh TASK-001
+claude
 ```
-It will:
-- Create a branch `task/TASK-001-...`
-- Write the code
-- Commit and push
-- Open a PR on GitHub
 
-Copy the PR number it gives you (e.g. PR #1).
-
----
-
-### Step 4 — Reviewer Agent
-```bash
-./scripts/run-reviewer.sh 1
 ```
-It will fetch the PR diff from GitHub and post a review.
-
-- **Approved?** → Go to GitHub and merge the PR yourself
-- **Changes requested?** → Run Developer agent again with the feedback
-
----
-
-### Step 5 — You merge
-Go to `github.com/YOUR_USERNAME/agent-trial/pulls`
-Open the PR, confirm it's approved, click **Merge pull request**.
-
----
-
-## Folder structure (after agents run)
+/build
 ```
-agent-trial/
-├── CLAUDE.md              ← agent standing instructions
-├── epics.md               ← written by PM agent
-├── tasks.md               ← written by Architect agent
-├── agents/                ← system prompts for each agent
-│   ├── pm-prompt.md
-│   ├── architect-prompt.md
-│   ├── developer-prompt.md
-│   └── reviewer-prompt.md
-├── scripts/               ← run each agent from here
-│   ├── run-pm.sh
-│   ├── run-architect.sh
-│   ├── run-developer.sh
-│   └── run-reviewer.sh
-└── src/                   ← code written by Developer agent
-    ├── domain/
-    ├── application/
-    ├── infrastructure/
-    └── presentation/
-```
+
+Watch the magic! 🎯→📋→🏗️→💻→🔍
